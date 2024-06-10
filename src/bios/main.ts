@@ -3,10 +3,12 @@
  */
 
 const searchParams = new URLSearchParams(window.location.search)
-if (searchParams.get('debug') != null) {
-  const { default: eruda } = await import('eruda')
-  eruda.init()
-}
+;(async () => {
+  if (searchParams.get('debug') != null) {
+    const { default: eruda } = await import('eruda')
+    eruda.init()
+  }
+})().catch(console.error)
 
 declare global {
   interface Window {
