@@ -117,7 +117,7 @@ body {
   animation: showScreen 1s var(--easing) forwards;
 
   &.blur {
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(50px) brightness(0.5);
   }
 
   &.remove {
