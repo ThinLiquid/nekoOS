@@ -141,6 +141,6 @@ const timeout = setTimeout(() => {
   // @ts-expect-error
   window.loadBootLoader(Object.values(window.bootLoaderDirectories)[0]).catch(console.error)
   unloadBIOS()
-}, 2500)
+}, 5000)
 
 loadBIOS()
