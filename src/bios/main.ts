@@ -3,7 +3,7 @@
  */
 
 const searchParams = new URLSearchParams(window.location.search)
-if (searchParams.get('debug') === 'true') {
+if (searchParams.get('debug') != null) {
   const { default: eruda } = await import('eruda')
   eruda.init()
 }
@@ -21,7 +21,7 @@ const bios = window.localStorage.getItem('BIOS')
 
 window.bootLoaderDirectories = {
   NEKOBootManager: 'neko',
-  BIOSUpdater: 'bios_upd'
+  BIOSSetup: 'bios_cfg'
 }
 
 window.loadBootLoader = async (directory: string) => {
@@ -37,7 +37,9 @@ window.updateBIOS = async () => {
   window.location.reload()
 }
 
-if (bios === null) {
+if (searchParams.get('boot_to_bios') != null) {
+  window.loadBootLoader(window.bootLoaderDirectories.BIOSSetup).catch(console.error)
+} else if (bios === null) {
   window.updateBIOS().catch(console.error)
 } else {
   const script = document.createElement('script')

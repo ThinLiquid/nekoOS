@@ -8,6 +8,22 @@ const BIOS_VERSION = '1.0.0'
 
 window.localStorage.setItem('BIOS_VERSION', BIOS_VERSION)
 
+let defaultBootLoader = window.localStorage.getItem('BIOS_DEFAULT_BOOTLOADER')
+if (!defaultBootLoader) {
+  // @ts-expect-error
+  defaultBootLoader = Object.keys(window.bootLoaderDirectories)[0]
+  window.localStorage.setItem('BIOS_DEFAULT_BOOTLOADER', defaultBootLoader)
+}
+
+const _bootDelay = window.localStorage.getItem('BIOS_BOOT_DELAY')
+let bootDelay = Infinity
+if (_bootDelay == null) {
+  bootDelay = 5000
+  window.localStorage.setItem('BIOS_BOOT_DELAY', bootDelay.toString())
+} else {
+  bootDelay = parseInt(_bootDelay)
+}
+
 const term = document.createElement('div')
 term.id = 'term'
 term.style.position = 'fixed'
@@ -139,8 +155,8 @@ const unloadBIOS = () => {
 
 const timeout = setTimeout(() => {
   // @ts-expect-error
-  window.loadBootLoader(Object.values(window.bootLoaderDirectories)[0]).catch(console.error)
+  window.loadBootLoader(window.bootLoaderDirectories[defaultBootLoader]).catch(console.error)
   unloadBIOS()
-}, 5000)
+}, bootDelay)
 
 loadBIOS()
