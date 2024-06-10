@@ -41,7 +41,7 @@ term.style.flexDirection = 'column'
 document.body.appendChild(term)
 
 if (window.localStorage.getItem('_') == null) {
-  window.localStorage.setItem('BOOT_LOGO', BOOT_LOGO)
+  window.localStorage.setItem('BIOS_BOOT_LOGO', BOOT_LOGO)
 
   window.localStorage.setItem('_', 'TRUE')
 }
@@ -81,7 +81,7 @@ const renderBootScreen = () => {
   document.body.appendChild(bootScreen)
 
   const bootImage = document.createElement('img')
-  bootImage.src = `data:image/svg+xml;base64,${window.localStorage.getItem('BOOT_LOGO') ?? BOOT_LOGO}`
+  bootImage.src = `data:image/svg+xml;base64,${window.localStorage.getItem('BIOS_BOOT_LOGO') ?? BOOT_LOGO}`
   bootImage.style.height = '25vh'
   bootImage.style.position = 'absolute'
   bootImage.style.top = '25%'

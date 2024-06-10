@@ -119,6 +119,39 @@ export default class BIOSSetup {
       document.body.appendChild(button)
     }
 
+    const uploadBootLogo = document.createElement('h3')
+    uploadBootLogo.textContent = 'Upload Boot Logo'
+    uploadBootLogo.style.fontFamily = 'sans-serif'
+    document.body.appendChild(uploadBootLogo)
+
+    const m = document.createElement('p')
+    m.textContent = 'Upload an SVG image to set as the boot logo.'
+    m.style.fontFamily = 'sans-serif'
+    document.body.appendChild(m)
+
+    const upload = document.createElement('input')
+    upload.type = 'file'
+    upload.accept = 'image/svg+xml'
+    upload.style.backgroundColor = 'black'
+    upload.style.color = 'white'
+    upload.style.border = '1px solid white'
+    upload.style.fontFamily = 'sans-serif'
+    document.body.appendChild(upload)
+
+    const uploadBtn = document.createElement('button')
+    uploadBtn.textContent = 'Upload'
+    uploadBtn.style.backgroundColor = 'black'
+    uploadBtn.style.color = 'white'
+    uploadBtn.style.border = '1px solid white'
+    uploadBtn.addEventListener('click', () => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        window.localStorage.setItem('BIOS_BOOT_LOGO', (reader.result as string).split(',')[1])
+      }
+      reader.readAsDataURL(upload.files?.[0] as Blob)
+    })
+    document.body.appendChild(uploadBtn)
+
     const end = document.createElement('h3')
     end.textContent = '--- END OF BIOS SETUP ---'
     end.style.fontFamily = 'sans-serif'
@@ -130,7 +163,7 @@ export default class BIOSSetup {
     exitButton.style.color = 'white'
     exitButton.style.border = '1px solid white'
     exitButton.addEventListener('click', () => {
-      window.location.reload()
+      window.location.replace('/')
     })
     document.body.appendChild(exitButton)
   }
