@@ -6,6 +6,11 @@ export default class BIOSSetup {
     document.body.style.height = 'max-content'
     document.body.style.margin = '0'
 
+    const h1 = document.createElement('h1')
+    h1.textContent = 'CoreBIOS Setup'
+    h1.style.fontFamily = 'sans-serif'
+    document.body.appendChild(h1)
+
     const upd = document.createElement('h3')
     upd.textContent = 'BIOS Update Utility'
     upd.style.fontFamily = 'sans-serif'
@@ -120,7 +125,7 @@ export default class BIOSSetup {
     }
 
     const uploadBootLogo = document.createElement('h3')
-    uploadBootLogo.textContent = 'Upload Boot Logo'
+    uploadBootLogo.textContent = 'Boot Logo'
     uploadBootLogo.style.fontFamily = 'sans-serif'
     document.body.appendChild(uploadBootLogo)
 
@@ -151,6 +156,18 @@ export default class BIOSSetup {
       reader.readAsDataURL(upload.files?.[0] as Blob)
     })
     document.body.appendChild(uploadBtn)
+
+    document.body.appendChild(document.createElement('br'))
+
+    const removeBtn = document.createElement('button')
+    removeBtn.textContent = 'Remove Boot Logo'
+    removeBtn.style.backgroundColor = 'black'
+    removeBtn.style.color = 'white'
+    removeBtn.style.border = '1px solid white'
+    removeBtn.addEventListener('click', () => {
+      window.localStorage.removeItem('BIOS_BOOT_LOGO')
+    })
+    document.body.appendChild(removeBtn)
 
     const end = document.createElement('h3')
     end.textContent = '--- END OF BIOS SETUP ---'
