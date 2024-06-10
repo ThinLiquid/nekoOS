@@ -20,6 +20,16 @@ export default class BIOSUpdater {
     })
     document.body.appendChild(button)
 
+    const exitButton = document.createElement('button')
+    exitButton.textContent = 'Exit'
+    exitButton.style.backgroundColor = 'black'
+    exitButton.style.color = 'white'
+    exitButton.style.border = '1px solid white'
+    exitButton.addEventListener('click', () => {
+      window.location.reload()
+    })
+    document.body.appendChild(exitButton)
+
     const currentVersion = document.createElement('p')
     currentVersion.textContent = `Current Version: ${window.localStorage.getItem('BIOS_VERSION') ?? 'Unknown'}`
     currentVersion.style.fontFamily = 'sans-serif'
@@ -31,14 +41,15 @@ export default class BIOSUpdater {
     latestVersion.textContent = 'Checking for updates...'
     latestVersion.style.fontFamily = 'sans-serif'
     latestVersion.style.fontSize = '16px'
-    latestVersion.style.margin = '10px'
+    latestVersion.style.margin = '0px'
     document.body.appendChild(latestVersion)
 
     ;(async () => {
       const response = await fetch('./bios.js')
       const bios = await response.text()
-      const version = bios.match(/BIOS_VERSION = '(.*)'/)?.[1] ?? 'Unknown'
-      latestVersion.textContent = `Latest Version: ${version}`
+      if (bios === window.localStorage.getItem('BIOS')) {
+        latestVersion.textContent = 'BIOS is up to date'
+      }
     })().catch(console.error)
   }
 }
