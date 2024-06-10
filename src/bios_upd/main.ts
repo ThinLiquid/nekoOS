@@ -49,6 +49,10 @@ export default class BIOSUpdater {
       const bios = await response.text()
       if (bios === window.localStorage.getItem('BIOS')) {
         latestVersion.textContent = 'BIOS is up to date'
+      } else {
+        // find version number
+        const version = bios.match(/BIOS_VERSION = '(.*)'/)?.[1]
+        latestVersion.textContent = `New BIOS version available (${version ?? 'Unknown'})`
       }
     })().catch(console.error)
   }
