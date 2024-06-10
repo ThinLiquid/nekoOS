@@ -31,6 +31,10 @@ export default class SettingsApp {
       height: 600
     })
 
+    mainWindow.once('closed', () => {
+      this.api.end()
+    })
+
     mainWindow.setContent(this.content)
   }
 }

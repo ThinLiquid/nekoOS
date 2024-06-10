@@ -20,7 +20,7 @@ term.style.display = 'none'
 term.style.width = '100%'
 term.style.height = '100%'
 term.style.overflow = 'auto'
-term.style.zIndex = '0'
+term.style.zIndex = '9999999999999999999999999999999999999999'
 term.style.flexDirection = 'column'
 document.body.appendChild(term)
 

@@ -7,6 +7,7 @@
 
   --white: 255, 255, 255;
   --grey: 97, 97, 97;
+  --dark-grey: 25,25,25;
   --black: 0, 0, 0;
 
   --red: 255, 59, 59;
@@ -35,6 +36,10 @@
     transform: scale(1.15, 1) rotate3d(0, 1, 0, 720deg);
     font-variation-settings: "slnt" -5, "wght" 300;
   }
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
@@ -146,14 +151,21 @@ body {
 }
 
 .neko-taskbar {
-  height: 32px;
+  --gap: 1px;
+  height: 39px;
   width: 100%;
   display: flex;
   justify-content: space-between;
   color: white;
-  gap: 1px;
+  gap: var(--gap);
   position: relative;
   z-index: 99999;
+  
+  background: rgba(var(--black), 0.35);
+  border-bottom: 1px solid rgba(var(--white), 0.25);
+  box-shadow: 0 0 20px rgba(var(--black), 0.4);
+  backdrop-filter: blur(60px);
+  outline: 1px solid rgba(var(--black), 0.9);
 
   .taskbar-section {
     display: flex;
@@ -170,29 +182,34 @@ body {
       flex: 1;
     }
   }
+
+  .neko-taskbar-apps {
+    display: flex;
+    color: white;
+    gap: var(--gap);
+  }
 }
 
 .neko-taskbar-item {
   height: 100%;
-  width: 40px;
+  min-width: 47.5px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   user-select: none;
-
-  transition: background .1s;
-
-  background: transparent;
+  border-bottom: 0px solid transparent!important;
   border: 1px solid transparent;
 
+  transition: background .5s var(--easing);
+
   &:hover {
-    background: rgba(var(--white), 0.1);
+    background: radial-gradient(rgba(var(--white), 0.2), rgba(var(--white), 0.05));
     border: 1px solid rgba(var(--white), 0.15);
   }
 
   &:active {
-    background: rgba(var(--white), 0.15);
+    background: radial-gradient(rgba(var(--white), 0.2), rgba(var(--white), 0.1));
     border: 1px solid rgba(var(--white), 0.2);
   }
 
@@ -206,26 +223,16 @@ body {
     width: 20px;
 
   }
-}
 
-.neko-taskbar-spacer {
-  flex: 1;
-}
-
-.neko-taskbar-clock {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 0.5rem;
-  font-size: 0.75rem;
-  text-align: center;
-  white-space: pre;
-}
-
-.neko-taskbar-apps {
-  display: flex;
-  color: white;
-  gap: 1px;
+  .neko-taskbar-clock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+    text-align: center;
+    white-space: pre;
+  }
 }
 
 .neko-desktop {
@@ -242,25 +249,26 @@ body {
   flex-direction: column;
   position: absolute;
   overflow: hidden;
+  animation: showWindow .5s var(--easing) forwards;
 
-  background: rgba(var(--black), 0.5);
+  background: rgba(var(--dark-grey), 0.4);
   border: 1px solid rgba(var(--white), 0.25);
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(60px);
+  box-shadow: 0 0 20px rgba(var(--black), 0.4);
+  backdrop-filter: blur(70px);
+  outline: 1px solid rgba(var(--black), 0.5);
 
-  transition: backdrop-filter .2s, background .2s, border-color .2s, box-shadow .2s;
+  transition: backdrop-filter .5s var(--easing), background .5s var(--easing), border-color .2s var(--easing), box-shadow 1s var(--easing);
 
   .neko-window-title {
     display: flex;
     align-items: center;
-    padding: 0.25rem 0.5rem;
-    height: 24px;
+    height: 32px;
     background: rgba(var(--black), 0.15);
-    color: rgb(var(--grey));
+    color: rgba(var(--white), 0.75);
     user-select: none;
 
-    transition: color .2s;
+    transition: color .2s var(--easing);
 
     .neko-window-title-icon {
       margin-right: 0.5rem;
@@ -268,21 +276,82 @@ body {
 
     .neko-window-title-text {
       flex: 1;
+      padding: 0.5rem;
     }
 
     .neko-window-title-buttons {
       display: flex;
-      gap: 0.5rem;
+      gap: 1px;
+      height: 100%;
     }
+
+    .neko-window-title-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      height: 100%;
+      width: 32px;
+      transition: color .2s, background .2s;
+      
+      .material-symbols-rounded {
+        font-size: 16px!important;
+      }
+
+      &.close {
+        .material-symbols-rounded {
+          font-size: 20px!important;
+        }
+
+        &:hover {
+          background: rgba(var(--red), 1);
+          color: white;
+        }
+      }
+
+      &:hover {
+        background: rgba(var(--white), 0.1);
+      }
+    }
+  }
+
+  &.remove {
+    pointer-events: none;
+    animation: hideWindow .5s var(--easing) forwards;
   }
 
   &:focus {
     background: rgba(var(--black), 0.3);
-    backdrop-filter: blur(40px);
+    backdrop-filter: blur(80px);
+    box-shadow: 0 0 30px rgba(var(--black), 0.5);
 
     .neko-window-title {
       color: rgb(var(--white));
     }
+  }
+}
+
+@keyframes hideWindow {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes showWindow {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
   }
 }
 

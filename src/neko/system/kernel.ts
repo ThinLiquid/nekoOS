@@ -9,7 +9,7 @@ import FontFaceObserver from 'fontfaceobserver'
 import DesktopScreen from './os/ui/screens/DesktopScreen'
 import Wallpaper from './os/ui/components/Wallpaper'
 
-import defaultBG from './os/assets/defaultbg.jpg'
+import defaultBG from './os/assets/defaultbg.png'
 
 export enum NEKOKernelLogPrefix {
   OK = '[  OK  ]',
@@ -85,15 +85,15 @@ export default class NEKOKernel {
     this.desktopScreen = new DesktopScreen(this)
     await this.log(NEKOKernelLogPrefix.OK, 'Created DesktopScreen')
 
-    await this.log(NEKOKernelLogPrefix.EMPTY, 'Initializing DesktopScreen')
-    Wallpaper(`url(${defaultBG})`).appendTo(document.body)
-    await this.log(NEKOKernelLogPrefix.EMPTY, 'Initialized DesktopScreen')
-
     await this.log(NEKOKernelLogPrefix.EMPTY, 'Registering Built-In Apps')
     for (const app of NEKOKernel.builtInApps) {
       await this.registerApp(true, app)
     }
     await this.log(NEKOKernelLogPrefix.OK, 'Registered Built-In Apps')
+
+    await this.log(NEKOKernelLogPrefix.EMPTY, 'Initializing DesktopScreen')
+    Wallpaper(`url(${defaultBG})`).appendTo(document.body)
+    await this.log(NEKOKernelLogPrefix.OK, 'Initialized DesktopScreen')
 
     await this.log(NEKOKernelLogPrefix.EMPTY, 'Starting LoginScreen')
     const loginScreen = new LoginScreen(userService, async (user: string) => {
@@ -116,11 +116,17 @@ export default class NEKOKernel {
   async startApp (app: string): Promise<void> {
     const { default: App } = await import(`./os/apps/${app}.ts`)
     if (this.instances[App.metadata.pkg] != null) throw new Error('App already started')
-    const api = new NEKOAPI(this)
+    const api = new NEKOAPI(this, App.metadata.pkg)
     const appInstance = new App(api)
 
     this.instances[App.metadata.pkg] = appInstance
     await api.ready()
+  }
+
+  async endApp (pkg: string): Promise<void> {
+    if (this.instances[pkg] == null) throw new Error('App not started')
+    if ('end' in this.instances[pkg]) await this.instances[pkg].end()
+    delete this.instances[pkg] // eslint-disable-line
   }
 }
 
@@ -135,7 +141,7 @@ export type LibraryType<T> =
 export class NEKOAPI {
   filesystem: FileSystem
 
-  constructor (kernel: NEKOKernel) {
+  constructor (private readonly kernel: NEKOKernel, private readonly pkg: string) {
     if (kernel.desktopScreen == null) throw new Error('DesktopScreen is null')
     this.filesystem = new FileSystem(kernel.vfs, {
       type: 'system',
@@ -169,5 +175,15 @@ export class NEKOAPI {
   emit (event: string, ...args: any[]): void {
     if (this.eventListeners[event] == null) return
     for (const _cb of this.eventListeners[event]) _cb(...args)
+  }
+
+  async end (): Promise<void> {
+    await this.kernel.endApp(this.pkg)
+    const props = Object.getOwnPropertyNames(this)
+
+    for (const prop of props) {
+      // @ts-expect-error
+      delete this[prop] // eslint-disable-line
+    }
   }
 }

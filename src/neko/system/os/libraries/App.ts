@@ -1,10 +1,14 @@
+import WindowTitleButton from '../ui/components/WindowTitleButton'
 import { Div } from './HTML'
 
+const _windows: BrowserWindow[] = []
+let freeZIndices: number[] = []
 const windows: {
   [key: string]: BrowserWindow[]
 } = {}
 
 export class BrowserWindow {
+  zIndex = 0
   private readonly element: Div
   private readonly content: Div
   private readonly desktop: HTMLElement | null
@@ -27,8 +31,23 @@ export class BrowserWindow {
       .append(
         new Div()
           .class('neko-window-title')
-          .text(config.title)
+          .append(
+            new Div()
+              .class('neko-window-title-text')
+              .text(config.title),
+            new Div().style({ flex: '1' }),
+            new Div()
+              .class('neko-window-title-buttons')
+              .append(
+                WindowTitleButton('close_fullscreen', 'Minimize'),
+                WindowTitleButton('open_in_full', 'Maximize'),
+                WindowTitleButton('close', 'Close')
+                  .class('close')
+                  .on('click', () => this.close())
+              )
+          )
           .on('mousedown', (e: MouseEvent) => {
+            this.emit('will-move')
             const startX = e.clientX
             const startY = e.clientY
             const startLeft = this.element.element.offsetLeft
@@ -56,11 +75,13 @@ export class BrowserWindow {
               newTop = Math.max(0, Math.min(newTop, maxTop))
 
               this.element.style({ left: `${newLeft}px`, top: `${newTop}px` })
+              this.emit('move')
             }
 
             const mouseUp = (): void => {
               window.removeEventListener('mousemove', mouseMove)
               window.removeEventListener('mouseup', mouseUp)
+              this.emit('moved')
             }
 
             window.addEventListener('mousemove', mouseMove)
@@ -71,12 +92,13 @@ export class BrowserWindow {
       .appendTo(this.desktop)
 
     this.element.on('focus', () => {
-      this.element.style({ zIndex: '9999' })
+      this.setHighestZIndex()
     })
 
     this.addResizeCorners(config.maxWidth ?? 200, config.maxHeight ?? 32)
 
     if (!(pkg in windows)) windows[pkg] = []
+    _windows.push(this)
     windows[pkg].push(this)
   }
 
@@ -87,6 +109,26 @@ export class BrowserWindow {
 
   getAllWindows (): BrowserWindow[] {
     return windows[this.pkg]
+  }
+
+  private setHighestZIndex (): void {
+    if (freeZIndices.length > 0) {
+      this.zIndex = Math.min(...freeZIndices)
+      freeZIndices = freeZIndices.filter(zIndex => zIndex !== this.zIndex)
+    } else {
+      this.zIndex = Math.max(..._windows.map(w => w.zIndex)) + 1
+    }
+    this.element.style({ zIndex: `${this.zIndex}` })
+  }
+
+  private close (): void {
+    this.element.class('remove')
+    setTimeout(() => {
+      this.element.remove()
+      freeZIndices.push(this.zIndex)
+      freeZIndices.sort((a, b) => a - b)
+      this.emit('closed')
+    }, 500)
   }
 
   private addResizeCorners (minWidth: number, minHeight: number): void {
@@ -155,6 +197,35 @@ export class BrowserWindow {
           window.addEventListener('mouseup', mouseUp)
         })
     }
+  }
+
+  eventListeners: {
+    [key: string]: Function[]
+  } = {}
+
+  on (event: string, listener: Function): this {
+    if (!(event in this.eventListeners)) this.eventListeners[event] = []
+    this.eventListeners[event].push(listener)
+    return this
+  }
+
+  off (event: string, listener: Function): this {
+    if (!(event in this.eventListeners)) return this
+    this.eventListeners[event] = this.eventListeners[event].filter(l => l !== listener)
+    return this
+  }
+
+  once (event: string, listener: Function): this {
+    const onceListener = (...args: any[]): void => {
+      listener(...args)
+      this.off(event, onceListener)
+    }
+    return this.on(event, onceListener)
+  }
+
+  emit (event: string, ...args: any[]): void {
+    if (!(event in this.eventListeners)) return
+    for (const listener of this.eventListeners[event]) listener(...args)
   }
 }
 
