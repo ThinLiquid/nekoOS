@@ -1,5 +1,6 @@
 import { NEKOAPI } from '../../kernel'
 import FilesIcon from '../assets/apps/files.svg'
+import { Div } from '../libraries/HTML'
 
 export default class FilesApp {
   static metadata = {
@@ -8,6 +9,8 @@ export default class FilesApp {
     icon: FilesIcon,
     pkg: 'net.neko.files'
   }
+
+  private content: Div | null = null
 
   constructor (private readonly api: NEKOAPI) {
     api.whenReady(async () => {
@@ -19,7 +22,7 @@ export default class FilesApp {
     const { Div } = await this.api.loadLibrary('HTML')
     const { BrowserWindow } = await this.api.loadLibrary('App')
 
-    const content = new Div()
+    this.content = new Div()
       .text('Hello, world!')
 
     const mainWindow = new BrowserWindow(FilesApp.metadata.pkg, {
@@ -28,8 +31,10 @@ export default class FilesApp {
       height: 600
     })
 
-    console.log(mainWindow.getAllWindows().length)
+    mainWindow.once('closed', async () => {
+      await this.api.end()
+    })
 
-    mainWindow.setContent(content)
+    mainWindow.setContent(this.content)
   }
 }

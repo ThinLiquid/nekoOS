@@ -72,7 +72,7 @@ export class BrowserWindow {
 
               // Ensure the element stays within the adjusted boundaries
               newLeft = Math.max(minLeft, Math.min(newLeft, maxLeft))
-              newTop = Math.max(0, Math.min(newTop, maxTop))
+              newTop = Math.max(-16, Math.min(newTop, maxTop))
 
               this.element.style({ left: `${newLeft}px`, top: `${newTop}px` })
               this.emit('move')
@@ -102,9 +102,10 @@ export class BrowserWindow {
     windows[pkg].push(this)
   }
 
-  setContent (content: Div): this {
-    this.content.element.replaceWith(content.element)
-    return this
+  setContent (content: Div): void {
+    const host = this.content.element
+    const shadow = host.attachShadow({ mode: 'open' })
+    shadow.append(content.element)
   }
 
   getAllWindows (): BrowserWindow[] {

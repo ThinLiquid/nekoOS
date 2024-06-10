@@ -315,6 +315,10 @@ body {
     }
   }
 
+  .neko-window-content {
+    color: white;
+  }
+
   &.remove {
     pointer-events: none;
     animation: hideWindow .5s var(--easing) forwards;
