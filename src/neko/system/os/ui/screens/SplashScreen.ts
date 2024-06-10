@@ -1,4 +1,4 @@
-import { Div } from '../../../libraries/HTML'
+import { Div } from '../../libraries/HTML'
 import Logo from '../components/Logo'
 
 export default class SplashScreen {

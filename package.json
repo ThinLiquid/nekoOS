@@ -17,8 +17,8 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
+    "eruda": "^3.0.1",
     "fontfaceobserver": "^2.3.0",
-    "material-symbols": "^0.20.0",
-    "uuid": "^10.0.0"
+    "material-symbols": "^0.20.0"
   }
 }

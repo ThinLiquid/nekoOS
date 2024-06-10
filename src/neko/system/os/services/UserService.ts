@@ -1,6 +1,6 @@
 import VirtualFileSystem from '../VirtualFileSystem'
 
-import FileSystem from '../../libraries/FileSystem'
+import FileSystem from '../libraries/FileSystem'
 
 export interface SystemUser {
   type: 'system'

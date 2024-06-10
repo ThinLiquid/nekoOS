@@ -1,10 +1,9 @@
-import DOMElement, { DOMImage, Div } from '../../../libraries/HTML'
+import { DOMImage, Div } from '../../libraries/HTML'
 
 import { NekoIconFilled } from '../components/CustomIcons'
 import MaterialSymbol from '../components/MaterialSymbol'
 import TaskbarItem from '../components/TaskbarItem'
 
-import FilesIcon from '../../assets/apps/files.svg'
 import NEKOKernel from '../../../kernel'
 
 export default class DesktopScreen {
@@ -72,33 +71,10 @@ export default class DesktopScreen {
     )
 
     this.taskbarApps.append(
-      TaskbarItem(new DOMImage(FilesIcon), 'Files')
-        .on('click', async () => await this.kernel.startApp('Files'))
+      TaskbarItem(new DOMImage(this.kernel.builtinApps['net.neko.files'].metadata.icon), this.kernel.builtinApps['net.neko.files'].metadata.name)
+        .on('click', async () => await this.kernel.startApp('Files')),
+      TaskbarItem(new DOMImage(this.kernel.builtinApps['net.neko.settings'].metadata.icon), this.kernel.builtinApps['net.neko.settings'].metadata.name)
+        .on('click', async () => await this.kernel.startApp('Settings'))
     )
-  }
-
-  createWindow (title: string, content: DOMElement): void {
-    const window = new Div()
-      .class('neko-window')
-      .attr('tabindex', '0')
-      .style({
-        top: '0',
-        left: '0',
-        width: '400px',
-        height: '400px'
-      })
-      .append(
-        new Div()
-          .class('neko-window-title')
-          .text(title),
-        new Div()
-          .class('neko-window-content')
-          .append(content)
-      )
-      .appendTo(this.desktop)
-
-    window.on('mousedown', () => {
-      window.style({ zIndex: '9999' })
-    })
   }
 }

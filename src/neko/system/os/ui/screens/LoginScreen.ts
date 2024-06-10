@@ -1,4 +1,4 @@
-import { Div } from '../../../libraries/HTML'
+import { Div } from '../../libraries/HTML'
 import UserService from '../../services/UserService'
 import Button from '../components/Button'
 import Input from '../components/Input'

@@ -1,5 +1,5 @@
-import VirtualFileSystem, { FileSystemEntry, FileSystemEntryType, FileSystemRootDirectory } from '../sys/VirtualFileSystem'
-import { SystemUser, User } from '../sys/services/UserService'
+import VirtualFileSystem, { FileSystemEntry, FileSystemEntryType, FileSystemRootDirectory } from '../VirtualFileSystem'
+import { SystemUser, User } from '../services/UserService'
 
 export default class FileSystem {
   constructor (private readonly fs: InstanceType<typeof VirtualFileSystem>, private readonly user: SystemUser | User) {}

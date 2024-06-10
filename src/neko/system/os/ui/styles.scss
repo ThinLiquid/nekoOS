@@ -152,6 +152,8 @@ body {
   justify-content: space-between;
   color: white;
   gap: 1px;
+  position: relative;
+  z-index: 99999;
 
   .taskbar-section {
     display: flex;
@@ -232,12 +234,14 @@ body {
   height: 100;
   display: flex;
   position: relative;
+  overflow: hidden;
 }
 
 .neko-window {
   display: flex;
   flex-direction: column;
   position: absolute;
+  overflow: hidden;
 
   background: rgba(var(--black), 0.5);
   border: 1px solid rgba(var(--white), 0.25);
@@ -251,6 +255,7 @@ body {
     display: flex;
     align-items: center;
     padding: 0.25rem 0.5rem;
+    height: 24px;
     background: rgba(var(--black), 0.15);
     color: rgb(var(--grey));
     user-select: none;
@@ -278,5 +283,71 @@ body {
     .neko-window-title {
       color: rgb(var(--white));
     }
+  }
+}
+
+.neko-resize-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  
+  &.top {
+    top: 0;
+    bottom: auto;
+    width: 100%;
+    cursor: n-resize;
+    z-index: 1;
+  }
+
+  &.left {
+    left: 0;
+    right: auto;
+    height: 100%;
+    cursor: w-resize;
+    z-index: 1;
+  }
+
+  &.bottom {
+    bottom: 0;
+    top: auto;
+    width: 100%;
+    cursor: s-resize;
+    z-index: 1;
+  }
+
+  &.right {
+    right: 0;
+    left: auto;
+    height: 100%;
+    cursor: e-resize;
+    z-index: 1;
+  }
+
+  &.top-left {
+    top: 0;
+    left: 0;
+    cursor: nw-resize;
+    z-index: 2;
+  }
+
+  &.top-right {
+    top: 0;
+    right: 0;
+    cursor: ne-resize;
+    z-index: 2;
+  }
+
+  &.bottom-left {
+    bottom: 0;
+    left: 0;
+    cursor: sw-resize;
+    z-index: 2;
+  }
+
+  &.bottom-right {
+    bottom: 0;
+    right: 0;
+    cursor: se-resize;
+    z-index: 2;
   }
 }

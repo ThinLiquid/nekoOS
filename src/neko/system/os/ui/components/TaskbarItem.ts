@@ -1,4 +1,4 @@
-import DOMElement, { Div } from '../../../libraries/HTML'
+import DOMElement, { Div } from '../../libraries/HTML'
 
 const TaskbarItem = (image: DOMElement, name: string, maxContent?: boolean): Div => new Div()
   .attr('title', name)

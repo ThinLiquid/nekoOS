@@ -1,4 +1,4 @@
-import { Div } from '../../../libraries/HTML'
+import { Div } from '../../libraries/HTML'
 
 const Wallpaper = (bg: string): Div => new Div()
   .style({

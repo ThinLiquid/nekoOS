@@ -1,4 +1,4 @@
-import DOMElement, { Div, Span } from '../../../libraries/HTML'
+import DOMElement, { Div, Span } from '../../libraries/HTML'
 
 const letterAnimation = (index: number): Partial<CSSStyleDeclaration> => {
   return {

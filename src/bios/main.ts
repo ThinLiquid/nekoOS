@@ -2,6 +2,12 @@
  * CoreBIOS BIOS Loader
  */
 
+const searchParams = new URLSearchParams(window.location.search)
+if (searchParams.get('debug') === 'true') {
+  const { default: eruda } = await import('eruda')
+  eruda.init()
+}
+
 declare global {
   interface Window {
     loadBootLoader: (directory: string) => Promise<void>
