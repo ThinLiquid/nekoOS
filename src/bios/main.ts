@@ -12,11 +12,17 @@ declare global {
   interface Window {
     loadBootLoader: (directory: string) => Promise<void>
     updateBIOS: () => Promise<void>
+    bootLoaderDirectories: Record<string, string>
   }
 }
 
 window.localStorage.setItem('BIOS_LOADER', '1.0.0')
 const bios = window.localStorage.getItem('BIOS')
+
+window.bootLoaderDirectories = {
+  NEKOBootManager: 'neko',
+  BIOSUpdater: 'bios_upd'
+}
 
 window.loadBootLoader = async (directory: string) => {
   const { default: BootLoader } = await import(`../${directory}/main.ts`)
